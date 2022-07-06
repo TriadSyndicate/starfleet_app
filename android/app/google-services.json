@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "406727162314",
+    "project_id": "starfleet-f90ad",
+    "storage_bucket": "starfleet-f90ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406727162314:android:98aefab1f4c502a3097733",
+        "android_client_info": {
+          "package_name": "com.example.starfleet_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406727162314-c04df8me3s90f71tukvc43uouvu3urc6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhrbhumZg_LEDmPysKa3pyBMuBpzlKveM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406727162314-c04df8me3s90f71tukvc43uouvu3urc6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
