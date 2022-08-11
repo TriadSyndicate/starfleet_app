@@ -27,6 +27,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final passwordEditingController = new TextEditingController();
   final confirmPasswordEditingController = new TextEditingController();
 
+  bool _isObscure = true;
+  bool _isObscure1 = true;
+
   @override
   Widget build(BuildContext context) {
     //first name field
@@ -35,12 +38,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         controller: firstNameEditingController,
         keyboardType: TextInputType.name,
         validator: (value) {
-          RegExp regex = new RegExp(r'^.{3,}$');
+          RegExp regex = new RegExp(r'^.{2,}$');
+          RegExp regex1 = new RegExp(r'^[a-zA-Z]+$');
           if (value!.isEmpty) {
             return ("First Name cannot be Empty");
           }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid name(Min. 3 Character)");
+          if (!regex.hasMatch(value) || !regex1.hasMatch(value)) {
+            return ("Enter Valid name(Min. 2 Character)");
           }
           return null;
         },
@@ -63,8 +67,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         controller: secondNameEditingController,
         keyboardType: TextInputType.name,
         validator: (value) {
+          RegExp regex = new RegExp(r'^.{2,}$');
+          RegExp regex1 = new RegExp(r'^[a-zA-Z]+$');
           if (value!.isEmpty) {
             return ("Second Name cannot be Empty");
+          }
+          if (!regex.hasMatch(value) || !regex1.hasMatch(value)) {
+            return ("Enter Valid name(Min. 2 Character)");
           }
           return null;
         },
@@ -114,7 +123,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final passwordField = TextFormField(
         autofocus: false,
         controller: passwordEditingController,
-        obscureText: true,
+        obscureText: _isObscure,
         validator: (value) {
           RegExp regex = new RegExp(r'^.{6,}$');
           if (value!.isEmpty) {
@@ -135,13 +144,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
+          suffixIcon: IconButton(
+            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _isObscure = !_isObscure;
+              });
+            },
+          ),
         ));
 
     //confirm password field
     final confirmPasswordField = TextFormField(
         autofocus: false,
         controller: confirmPasswordEditingController,
-        obscureText: true,
+        obscureText: _isObscure1,
         validator: (value) {
           if (confirmPasswordEditingController.text !=
               passwordEditingController.text) {
@@ -159,6 +176,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           hintText: "Confirm Password",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(_isObscure1 ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _isObscure1 = !_isObscure1;
+              });
+            },
           ),
         ));
 
@@ -297,7 +322,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     Navigator.pushAndRemoveUntil(
         (context),
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
         (route) => false);
   }
 }
