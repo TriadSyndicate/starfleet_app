@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starfleet_app/screens/dashboard/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+//import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,6 +10,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  //Loads env file
+  //
   // Runs the App
   runApp(MyApp());
 }

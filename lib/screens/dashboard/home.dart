@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
+import 'package:starfleet_app/screens/dashboard/side_drawer.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -21,6 +24,7 @@ class _HomeState extends State<Home> {
   UserModel loggedInUser = UserModel();
   int _count = 0;
   String name = "Brad";
+  String? currentLocation = "Melbourne, Aus";
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchControl = new TextEditingController();
   @override
@@ -34,24 +38,22 @@ class _HomeState extends State<Home> {
           color: Colors.black,
           fontFamily: 'Roboto'),
     );
-    var APIURI = Uri(
-        scheme: 'http',
-        host: '192.168.0.23',
-        path: '/api/v1/location',
-        port: 2000);
-        
+    // BUILD Request File
+    // var APIURI = Uri(
+    //     scheme: 'https',
+    //     host: 'recommender-backend-5.herokuapp.com',
+    //     path: '/api/v1/location',
+    //     port: 80);
 
-    final response = http.post(APIURI, body: {"locationName": "Nairobi"});
-    response.then((value) => {
-      
-    });
+    // final response = http.post(APIURI, body: {"locationName": "Nairobi"});
+    // response.then((value) => {print(value)});
 
     final testCard = Container(
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xffeeeeee), width: 2.0),
         color: Colors.white38,
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.white10,
             blurRadius: 4,
@@ -65,7 +67,7 @@ class _HomeState extends State<Home> {
       width: 80,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           Center(
               child: Icon(
             Icons.icecream,
@@ -180,7 +182,7 @@ class _HomeState extends State<Home> {
                                 width: 5,
                               ),
                               Text(
-                                "Melbourne, Aus",
+                                currentLocation!,
                                 style: GoogleFonts.manrope(
                                     fontWeight: FontWeight.w600),
                               )
@@ -189,15 +191,25 @@ class _HomeState extends State<Home> {
                         ],
                       ),
                     ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                      child: Center(
-                        child: FaIcon(FontAwesomeIcons.sliders),
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade200)),
+                        child: Center(
+                          child: FaIcon(FontAwesomeIcons.sliders),
+                        ),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SideDrawer(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
