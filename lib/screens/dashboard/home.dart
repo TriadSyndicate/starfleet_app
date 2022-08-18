@@ -129,7 +129,7 @@ class _HomeState extends State<Home> {
                 decoration: BoxDecoration(
                     color: Colors.amber,
                     borderRadius: BorderRadius.circular(15)),
-                child: Text(list[index].geoID!),
+                child: Text(list[index].attractionData!['name']),
               );
             })),
       );

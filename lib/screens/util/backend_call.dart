@@ -46,6 +46,7 @@ class APIServices {
         headers: {'Content-type': 'application/json'});
     if (response.statusCode == 200) {
       final List result = jsonDecode(response.body)['response'];
+      print(CategoryModel.fromJson(result[1]).name);
       return result.map(((e) => CategoryModel.fromJson(e))).toList();
     } else {
       throw Exception(response.reasonPhrase);
