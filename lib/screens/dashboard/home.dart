@@ -103,14 +103,41 @@ class _HomeState extends State<Home> {
           ],
         ));
 
-    // return Container(
-    //   alignment: Alignment.center,
-    //   decoration: BoxDecoration(
-    //       color: Colors.amber, borderRadius: BorderRadius.circular(15)),
-    //   child: Text(myProducts[index]["name"]),
-    // );
-    Widget customScroll(List<AttractionModel> list) {
+    Widget cardx(AttractionModel att) {
       return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 150,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+                image: NetworkImage(
+                    "${att.attractionData!['photo']['images']['small']['url']}"),
+                fit: BoxFit.cover)),
+        child: Container(
+          margin: EdgeInsets.only(right: 200, bottom: 100, left: 10, top: 10),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "${att.attractionData!['name']}",
+                style: GoogleFonts.montserrat(
+                    color: Colors.black, fontWeight: FontWeight.w700),
+              ),
+              Text(
+                "/month",
+                style: GoogleFonts.montserrat(
+                    color: Colors.black, fontWeight: FontWeight.w400),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget customScroll(List<AttractionModel> list) {
+      return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: GridView.builder(
@@ -120,17 +147,18 @@ class _HomeState extends State<Home> {
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               childAspectRatio: MediaQuery.of(context).size.width /
-                  (MediaQuery.of(context).size.height / 3),
+                  (MediaQuery.of(context).size.height / 4),
             ),
             itemCount: list.length,
             itemBuilder: ((context, index) {
-              return Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(15)),
-                child: Text(list[index].attractionData!['name']),
-              );
+              return cardx(list[index]);
+              // return Container(
+              //   alignment: Alignment.center,
+              //   decoration: BoxDecoration(
+              //       color: Colors.amber,
+              //       borderRadius: BorderRadius.circular(15)),
+              //   child: Text(list[index].attractionData!['name']),
+              // );
             })),
       );
     }
