@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:starfleet_app/models/attraction.model.dart';
-import 'package:starfleet_app/models/category,model.dart';
+import 'package:starfleet_app/models/category.model.dart';
 import 'package:starfleet_app/models/location.model.dart';
 
 class APIServices {
@@ -9,10 +9,9 @@ class APIServices {
 
   Future<Map> getLocationId(name) async {
     Response response = await post(Uri.parse('$endpoint' '/location'),
-        body: {"locationName": name});
+        body: {"locationName": 'nairobi'});
     if (response.statusCode == 200) {
       final Map result = jsonDecode(response.body)['response'];
-      print(result);
       return result;
     } else {
       throw Exception(response.reasonPhrase);
@@ -39,9 +38,12 @@ class APIServices {
   }
 
   Future<List<CategoryModel>> getCategoryList(LocationModel loc) async {
+    List<String> lst = loc.attractions!.map((e) => e.toString()).toList();
+    var pp = {"attractions": lst};
     Response response = await post(
         Uri.parse('$endpoint' '/location/categories'),
-        body: {"attractions": loc.attractions});
+        body: json.encode(pp),
+        headers: {'Content-type': 'application/json'});
     if (response.statusCode == 200) {
       final List result = jsonDecode(response.body)['response'];
       return result.map(((e) => CategoryModel.fromJson(e))).toList();
@@ -51,11 +53,15 @@ class APIServices {
   }
 
   Future<List<AttractionModel>> getAttractionList(LocationModel loc) async {
+    List<String> lst = loc.attractions!.map((e) => e.toString()).toList();
+    var pp = {"attractions": lst};
     Response response = await post(
         Uri.parse('$endpoint' '/location/attractions'),
-        body: {"attractions": loc.attractions});
+        body: json.encode(pp),
+        headers: {'Content-type': 'application/json'});
     if (response.statusCode == 200) {
       final List result = jsonDecode(response.body)['response'];
+      print(AttractionModel.fromJson(result[0]).geoID);
       return result.map(((e) => AttractionModel.fromJson(e))).toList();
     } else {
       throw Exception(response.reasonPhrase);
