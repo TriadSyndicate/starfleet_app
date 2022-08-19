@@ -107,51 +107,70 @@ class _HomeState extends State<Home> {
               content: Text("${att.attractionData!['name']}"),
             ));
           },
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                    image: NetworkImage(
-                        "${att.attractionData!['photo']['images']['small']['url']}"),
-                    fit: BoxFit.cover)),
-            child: Container(
-              margin:
-                  EdgeInsets.only(right: 200, bottom: 100, left: 10, top: 10),
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 13,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    image: DecorationImage(
+                        image: NetworkImage(
+                            "${att.attractionData!['photo']['images']['small']['url']}"),
+                        fit: BoxFit.cover)),
+                child: Container(
+                  margin:
+                      EdgeInsets.only(right: 5, bottom: 20, left: 10, top: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          "${att.attractionData!['name']}",
+                          style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12.0),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
                 children: [
                   Text(
-                    "${att.attractionData!['name']}",
+                    "${att.attractionData!['offer_group']?['lowest_price'] ?? 'KES 500'}",
                     style: GoogleFonts.montserrat(
-                        color: Colors.black, fontWeight: FontWeight.w700),
-                  ),
-                  Text(
-                    "/month",
-                    style: GoogleFonts.montserrat(
-                        color: Colors.black, fontWeight: FontWeight.w400),
-                  ),
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                        fontSize: 10),
+                  )
                 ],
               ),
-            ),
+            ],
           ));
     }
 
     Widget customScroll(List<AttractionModel> list) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        //height: MediaQuery.of(context).size.height,
         child: GridView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             physics: BouncingScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
+              crossAxisSpacing: 5,
               childAspectRatio: MediaQuery.of(context).size.width /
-                  (MediaQuery.of(context).size.height / 4),
+                  (MediaQuery.of(context).size.height / 3),
             ),
             itemCount: list.length,
             itemBuilder: ((context, index) {
@@ -174,114 +193,14 @@ class _HomeState extends State<Home> {
               List<CategoryModel> categoryList = state.categories;
               LocationModel locationM = state.location;
               return Container(
-                  padding: EdgeInsets.all(15),
+                  padding:
+                      EdgeInsets.only(right: 10, bottom: 0, left: 10, top: 0),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: SingleChildScrollView(
                       physics: BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          // Top Bar w/ Current Location
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: Colors.grey.shade200)),
-                                child: Center(
-                                  child: Icon(Icons.menu),
-                                ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Current Location",
-                                    style: GoogleFonts.manrope(
-                                        color: Colors.grey.shade400),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_sharp,
-                                        color: Colors.blue,
-                                        size: 15,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        currentLocation!,
-                                        style: GoogleFonts.manrope(
-                                            fontWeight: FontWeight.w600),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              InkWell(
-                                child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                          color: Colors.grey.shade200)),
-                                  child: Center(
-                                    child: FaIcon(FontAwesomeIcons.sliders),
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SideDrawer(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 80,
-                            decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "GET YOUR 10% \nCASHBACK",
-                                      style: GoogleFonts.montserrat(
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                    Container(
-                                        margin: EdgeInsets.only(left: 30),
-                                        child: Text(
-                                          "*Expired 20 Dec 2022",
-                                          style: GoogleFonts.montserrat(
-                                              color: Colors.white),
-                                        ))
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 20,
-                                ),
-                                Image.network(
-                                    "https://www.pngmart.com/files/16/Modern-House-PNG-Clipart.png")
-                              ],
-                            ),
-                          ),
                           scrollBar,
                           customScroll(attractionList),
                         ],
@@ -294,11 +213,123 @@ class _HomeState extends State<Home> {
             }
           },
         ));
+    final initial = Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Flexible(
+          flex: 0,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade200)),
+                    child: Center(
+                      child: Icon(Icons.menu),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Current Location",
+                        style: GoogleFonts.manrope(color: Colors.grey.shade400),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_on_sharp,
+                            color: Colors.blue,
+                            size: 15,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            currentLocation!,
+                            style: GoogleFonts.manrope(
+                                fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade200)),
+                      child: Center(
+                        child: FaIcon(FontAwesomeIcons.sliders),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SideDrawer(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 80,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "GET YOUR 10% \nCASHBACK",
+                          style: GoogleFonts.montserrat(
+                              fontWeight: FontWeight.w700, color: Colors.white),
+                          textAlign: TextAlign.start,
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(left: 30),
+                            child: Text(
+                              "*Expired 20 Dec 2022",
+                              style:
+                                  GoogleFonts.montserrat(color: Colors.white),
+                            ))
+                      ],
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Image.network(
+                        "https://www.pngmart.com/files/16/Modern-House-PNG-Clipart.png")
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 5,
+          child: firstPage,
+        )
+      ],
+    );
 
     return Scaffold(
         body: SafeArea(
       child: Stack(
-        children: [firstPage],
+        children: [initial],
       ),
     ));
   }
