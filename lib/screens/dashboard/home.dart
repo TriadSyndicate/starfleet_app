@@ -79,9 +79,6 @@ class _HomeState extends State<Home> {
       ),
     );
 
-    final List<Map> myProducts = List.generate(
-        100000, (index) => {"id": index, "name": "Product $index"}).toList();
-
     final searchBar = TextField(
       style: TextStyle(
         fontSize: 15.0,
@@ -104,36 +101,43 @@ class _HomeState extends State<Home> {
         ));
 
     Widget cardx(AttractionModel att) {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: 150,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-                image: NetworkImage(
-                    "${att.attractionData!['photo']['images']['small']['url']}"),
-                fit: BoxFit.cover)),
-        child: Container(
-          margin: EdgeInsets.only(right: 200, bottom: 100, left: 10, top: 10),
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "${att.attractionData!['name']}",
-                style: GoogleFonts.montserrat(
-                    color: Colors.black, fontWeight: FontWeight.w700),
+      return InkWell(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("${att.attractionData!['name']}"),
+            ));
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    image: NetworkImage(
+                        "${att.attractionData!['photo']['images']['small']['url']}"),
+                    fit: BoxFit.cover)),
+            child: Container(
+              margin:
+                  EdgeInsets.only(right: 200, bottom: 100, left: 10, top: 10),
+              decoration: BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.circular(10)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${att.attractionData!['name']}",
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    "/month",
+                    style: GoogleFonts.montserrat(
+                        color: Colors.black, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
-              Text(
-                "/month",
-                style: GoogleFonts.montserrat(
-                    color: Colors.black, fontWeight: FontWeight.w400),
-              ),
-            ],
-          ),
-        ),
-      );
+            ),
+          ));
     }
 
     Widget customScroll(List<AttractionModel> list) {
@@ -152,13 +156,6 @@ class _HomeState extends State<Home> {
             itemCount: list.length,
             itemBuilder: ((context, index) {
               return cardx(list[index]);
-              // return Container(
-              //   alignment: Alignment.center,
-              //   decoration: BoxDecoration(
-              //       color: Colors.amber,
-              //       borderRadius: BorderRadius.circular(15)),
-              //   child: Text(list[index].attractionData!['name']),
-              // );
             })),
       );
     }
