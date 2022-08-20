@@ -26,9 +26,10 @@ class _HomeState extends State<Home> {
   UserModel loggedInUser = UserModel();
   int _count = 0;
   String name = "Brad";
-  String? currentLocation = "Melbourne, Aus";
+  String? currentLocation = SideDrawer().locationString;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchControl = new TextEditingController();
+  var fpage;
   @override
   Widget build(BuildContext context) {
     var welcomeText = Text(
@@ -99,6 +100,41 @@ class _HomeState extends State<Home> {
             testCard,
           ],
         ));
+
+    Widget categoryScrollView(List<CategoryModel> x) {
+      for (var e in x) {
+        int count = 0;
+        for (var f in x) {
+          if (e.name == f.name) {
+            count++;
+          }
+        }
+        e.count = count;
+      }
+      return Container(
+        height: MediaQuery.of(context).size.height / 12,
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: x.length,
+            itemBuilder: ((context, index) {
+              return InkWell(
+                onTap: () {
+                  print('${x[index].name}');
+                },
+                child: Card(
+                  key: ValueKey(x[index]),
+                  margin: const EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      Text('${x[index].name}'),
+                      Text('${x[index].count}'),
+                    ],
+                  ),
+                ),
+              );
+            })),
+      );
+    }
 
     Widget cardx(AttractionModel att) {
       return InkWell(
@@ -179,7 +215,7 @@ class _HomeState extends State<Home> {
       );
     }
 
-    final firstPage = BlocProvider(
+    var firstPage = BlocProvider(
         create: (context) => LocationBloc(
               RepositoryProvider.of<APIServices>(context),
             )..add(LoadLocationEvent(currentLocation)),
@@ -201,7 +237,7 @@ class _HomeState extends State<Home> {
                       physics: BouncingScrollPhysics(),
                       child: Column(
                         children: [
-                          scrollBar,
+                          categoryScrollView(categoryList),
                           customScroll(attractionList),
                         ],
                       )));

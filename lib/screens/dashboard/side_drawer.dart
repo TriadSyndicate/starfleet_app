@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_place/google_place.dart';
-//import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class SideDrawer extends StatefulWidget {
   SideDrawer({Key? key}) : super(key: key);
-  var locationString;
+  var locationString = "Nairobi, Kenya";
 
   @override
   State<SideDrawer> createState() => _SideDrawerState();
@@ -83,15 +82,6 @@ class _SideDrawerState extends State<SideDrawer> {
                               predictions[index].description!;
                         });
                         Navigator.pop(context);
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => DetailsPage(
-                        //       placeId: predictions[index].placeId,
-                        //       googlePlace: googlePlace,
-                        //     ),
-                        //   ),
-                        // );
                       },
                     );
                   },

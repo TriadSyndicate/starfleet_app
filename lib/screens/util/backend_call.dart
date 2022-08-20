@@ -8,6 +8,8 @@ class APIServices {
   String endpoint = 'https://recommender-backend-5.herokuapp.com/api/v1';
 
   Future<Map> getLocationId(name) async {
+    var str = name.split(",");
+    print(str);
     Response response = await post(Uri.parse('$endpoint' '/location'),
         body: {"locationName": 'nairobi'});
     if (response.statusCode == 200) {
@@ -46,7 +48,6 @@ class APIServices {
         headers: {'Content-type': 'application/json'});
     if (response.statusCode == 200) {
       final List result = jsonDecode(response.body)['response'];
-      print(CategoryModel.fromJson(result[1]).name);
       return result.map(((e) => CategoryModel.fromJson(e))).toList();
     } else {
       throw Exception(response.reasonPhrase);
@@ -62,7 +63,6 @@ class APIServices {
         headers: {'Content-type': 'application/json'});
     if (response.statusCode == 200) {
       final List result = jsonDecode(response.body)['response'];
-      print(AttractionModel.fromJson(result[0]).geoID);
       return result.map(((e) => AttractionModel.fromJson(e))).toList();
     } else {
       throw Exception(response.reasonPhrase);
