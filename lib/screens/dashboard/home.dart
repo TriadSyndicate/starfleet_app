@@ -16,6 +16,7 @@ import 'package:starfleet_app/screens/util/backend_call.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
+  String? currentLocation;
 
   @override
   State<Home> createState() => _HomeState();
@@ -26,12 +27,12 @@ class _HomeState extends State<Home> {
   UserModel loggedInUser = UserModel();
   int _count = 0;
   String name = "Brad";
-  String? currentLocation = SideDrawer().locationString;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchControl = new TextEditingController();
   var fpage;
   @override
   Widget build(BuildContext context) {
+    widget.currentLocation = "Madrid, Spain";
     var welcomeText = Text(
       'Welcome $name,',
       maxLines: 1,
@@ -215,10 +216,120 @@ class _HomeState extends State<Home> {
       );
     }
 
+    Widget initial(BuildContext context) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Flexible(
+            flex: 0,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade200)),
+                      child: Center(
+                        child: Icon(Icons.menu),
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Current Location",
+                          style:
+                              GoogleFonts.manrope(color: Colors.grey.shade400),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.location_on_sharp,
+                              color: Colors.blue,
+                              size: 15,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              widget.currentLocation!,
+                              style: GoogleFonts.manrope(
+                                  fontWeight: FontWeight.w600),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade200)),
+                        child: Center(
+                          child: FaIcon(FontAwesomeIcons.sliders),
+                        ),
+                      ),
+                      onTap: () {
+                        // ignore: avoid_single_cascade_in_expression_statements
+                        context.read<LocationBloc>()
+                          ..add(ChooseLocationEvent());
+                      },
+                    ),
+                  ],
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 80,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "GET YOUR 10% \nCASHBACK",
+                            style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
+                            textAlign: TextAlign.start,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 30),
+                              child: Text(
+                                "*Expired 20 Dec 2022",
+                                style:
+                                    GoogleFonts.montserrat(color: Colors.white),
+                              ))
+                        ],
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Image.network(
+                          "https://www.pngmart.com/files/16/Modern-House-PNG-Clipart.png")
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
     var firstPage = BlocProvider(
         create: (context) => LocationBloc(
               RepositoryProvider.of<APIServices>(context),
-            )..add(LoadLocationEvent(currentLocation)),
+            )..add(LoadLocationEvent(widget.currentLocation)),
         child: BlocBuilder<LocationBloc, LocationState>(
           builder: (context, state) {
             if (state is LocationLoadingState) {
@@ -237,10 +348,14 @@ class _HomeState extends State<Home> {
                       physics: BouncingScrollPhysics(),
                       child: Column(
                         children: [
+                          initial(context),
                           categoryScrollView(categoryList),
                           customScroll(attractionList),
                         ],
                       )));
+            }
+            if (state is ChooseLocationState) {
+              return SideDrawer();
             }
             if (state is LocationErrorLoadedState) {
               return Text(state.error!);
@@ -249,123 +364,10 @@ class _HomeState extends State<Home> {
             }
           },
         ));
-    final initial = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Flexible(
-          flex: 0,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade200)),
-                    child: Center(
-                      child: Icon(Icons.menu),
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Current Location",
-                        style: GoogleFonts.manrope(color: Colors.grey.shade400),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.location_on_sharp,
-                            color: Colors.blue,
-                            size: 15,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            currentLocation!,
-                            style: GoogleFonts.manrope(
-                                fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                      child: Center(
-                        child: FaIcon(FontAwesomeIcons.sliders),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SideDrawer(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 80,
-                decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "GET YOUR 10% \nCASHBACK",
-                          style: GoogleFonts.montserrat(
-                              fontWeight: FontWeight.w700, color: Colors.white),
-                          textAlign: TextAlign.start,
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(left: 30),
-                            child: Text(
-                              "*Expired 20 Dec 2022",
-                              style:
-                                  GoogleFonts.montserrat(color: Colors.white),
-                            ))
-                      ],
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Image.network(
-                        "https://www.pngmart.com/files/16/Modern-House-PNG-Clipart.png")
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        Flexible(
-          flex: 5,
-          child: firstPage,
-        )
-      ],
-    );
-
     return Scaffold(
         body: SafeArea(
       child: Stack(
-        children: [initial],
+        children: [firstPage],
       ),
     ));
   }

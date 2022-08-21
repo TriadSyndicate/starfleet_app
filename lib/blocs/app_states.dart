@@ -31,3 +31,8 @@ class LocationErrorLoadedState extends LocationState {
   @override
   List<Object?> get props => [error];
 }
+
+class ChooseLocationState extends LocationState {
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}

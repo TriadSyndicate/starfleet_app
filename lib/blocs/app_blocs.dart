@@ -21,5 +21,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         emit(LocationErrorLoadedState(e.toString()));
       }
     }));
+
+    on<ChooseLocationEvent>((((event, emit) {
+      emit(ChooseLocationState());
+    })));
   }
 }

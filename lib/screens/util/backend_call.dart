@@ -11,7 +11,7 @@ class APIServices {
     var str = name.split(",");
     print(str);
     Response response = await post(Uri.parse('$endpoint' '/location'),
-        body: {"locationName": 'nairobi'});
+        body: {"locationName": '${str[0]}'});
     if (response.statusCode == 200) {
       final Map result = jsonDecode(response.body)['response'];
       return result;
