@@ -154,7 +154,17 @@ class _DetailState extends State<Detail> {
                 ),
                 TextButton(
                   child: const Text('Yes'),
-                  onPressed: () {},
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text('Saved'),
+                      duration: const Duration(seconds: 1),
+                      action: SnackBarAction(
+                        label: 'Saving..',
+                        onPressed: () {},
+                      ),
+                    ));
+                    Navigator.of(context).pop();
+                  },
                 )
               ],
             ),
@@ -167,7 +177,16 @@ class _DetailState extends State<Detail> {
             primary: Colors.red,
             textStyle: const TextStyle(fontSize: 20),
           ),
-          onPressed: () {},
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text('Disliked'),
+              duration: const Duration(seconds: 1),
+              action: SnackBarAction(
+                label: 'Saving..',
+                onPressed: () {},
+              ),
+            ));
+          },
           child: const Text('Dislike'),
         ),
       ],
