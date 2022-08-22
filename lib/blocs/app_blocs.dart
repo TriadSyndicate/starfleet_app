@@ -16,7 +16,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             await _apiServices.getLocationDetail(locationId);
         final categories = await _apiServices.getCategoryList(location);
         final attractions = await _apiServices.getAttractionList(location);
-        emit(LocationLoadedState(attractions, categories, location));
+        emit(LocationLoadedState(
+            attractions, categories, location, event.locationName));
       } catch (e) {
         emit(LocationErrorLoadedState(e.toString()));
       }

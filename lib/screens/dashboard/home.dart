@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starfleet_app/blocs/app_blocs.dart';
@@ -11,7 +12,9 @@ import 'package:starfleet_app/models/user.model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:starfleet_app/screens/dashboard/detail.dart';
 import 'package:starfleet_app/screens/dashboard/side_drawer.dart';
+import 'package:starfleet_app/screens/login_screen.dart';
 import 'package:starfleet_app/screens/util/backend_call.dart';
 
 class Home extends StatefulWidget {
@@ -25,11 +28,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
-  int _count = 0;
   String name = "Brad";
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TextEditingController _searchControl = new TextEditingController();
-  var fpage;
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     widget.currentLocation = "Madrid, Spain";
@@ -41,6 +53,33 @@ class _HomeState extends State<Home> {
           fontWeight: FontWeight.bold,
           color: Colors.black,
           fontFamily: 'Roboto'),
+    );
+    var dummyImgURL =
+        'https://media-cdn.tripadvisor.com/media/photo-l/16/d3/75/e7/pond-in-royal-botanical.jpg';
+
+    final drawer = Drawer(
+      child: ListView(
+        // Important: Remove any padding from the ListView.
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text('Welcome ${loggedInUser.firstName}'),
+          ),
+          ListTile(
+            title: const Text('LogOut'),
+            onTap: () {
+              // Update the state of the app
+              // ...
+              // Then close the drawer
+              logout(context);
+              //Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
 
     final testCard = Container(
@@ -81,37 +120,7 @@ class _HomeState extends State<Home> {
       ),
     );
 
-    final searchBar = TextField(
-      style: TextStyle(
-        fontSize: 15.0,
-        color: Colors.blueGrey[300],
-      ),
-      maxLines: 1,
-      controller: _searchControl,
-    );
-
-    final scrollBar = SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            testCard,
-            testCard,
-            testCard,
-            testCard,
-            testCard,
-          ],
-        ));
-
     Widget categoryScrollView(List<CategoryModel> x) {
-      for (var e in x) {
-        int count = 0;
-        for (var f in x) {
-          if (e.name == f.name) {
-            count++;
-          }
-        }
-        e.count = count;
-      }
       return Container(
         height: MediaQuery.of(context).size.height / 12,
         child: ListView.builder(
@@ -143,6 +152,11 @@ class _HomeState extends State<Home> {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("${att.attractionData!['name']}"),
             ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Detail(attractionData: att.attractionData)));
           },
           child: Column(
             children: [
@@ -153,7 +167,7 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(5.0),
                     image: DecorationImage(
                         image: NetworkImage(
-                            "${att.attractionData!['photo']['images']['small']['url']}"),
+                            "${att.attractionData!['photo']!['images']!['small']!['url'] ?? dummyImgURL}"),
                         fit: BoxFit.cover)),
                 child: Container(
                   margin:
@@ -227,16 +241,16 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey.shade200)),
-                      child: Center(
-                        child: Icon(Icons.menu),
-                      ),
-                    ),
+                    // Container(
+                    //   width: 50,
+                    //   height: 50,
+                    //   decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(10),
+                    //       border: Border.all(color: Colors.grey.shade200)),
+                    //   child: Center(
+                    //     child: Icon(Icons.menu),
+                    //   ),
+                    // ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -296,7 +310,7 @@ class _HomeState extends State<Home> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "GET YOUR 10% \nCASHBACK",
+                            "  Welcome ${loggedInUser.firstName}",
                             style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white),
@@ -305,7 +319,7 @@ class _HomeState extends State<Home> {
                           Container(
                               margin: EdgeInsets.only(left: 30),
                               child: Text(
-                                "*Expired 20 Dec 2022",
+                                "${loggedInUser.email}",
                                 style:
                                     GoogleFonts.montserrat(color: Colors.white),
                               ))
@@ -338,7 +352,28 @@ class _HomeState extends State<Home> {
             if (state is LocationLoadedState) {
               List<AttractionModel> attractionList = state.attractions;
               List<CategoryModel> categoryList = state.categories;
+              List<CategoryModel> categorySum = [];
+              for (var e in categoryList) {
+                int count = 0;
+                for (var t in categoryList) {
+                  if (e.name == t.name) {
+                    count++;
+                  }
+                }
+                e.count = count;
+                bool test = false;
+                categorySum.map((ex) => {
+                      if (ex.name == e.name)
+                        {
+                          test = true,
+                        }
+                    });
+                if (!test) {
+                  categorySum.add(e);
+                }
+              }
               LocationModel locationM = state.location;
+              widget.currentLocation = state.locationString;
               return Container(
                   padding:
                       EdgeInsets.only(right: 10, bottom: 0, left: 10, top: 0),
@@ -349,7 +384,7 @@ class _HomeState extends State<Home> {
                       child: Column(
                         children: [
                           initial(context),
-                          categoryScrollView(categoryList),
+                          categoryScrollView(categorySum),
                           customScroll(attractionList),
                         ],
                       )));
@@ -364,11 +399,44 @@ class _HomeState extends State<Home> {
             }
           },
         ));
-    return Scaffold(
-        body: SafeArea(
-      child: Stack(
-        children: [firstPage],
+
+    return MaterialApp(
+      title: 'Recommender App',
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
       ),
-    ));
+      debugShowCheckedModeBanner: false,
+      home: RepositoryProvider(
+          create: (context) => APIServices(),
+          child: Scaffold(
+              appBar: AppBar(
+                title: const Text("Recommender App"),
+                centerTitle: true,
+              ),
+              drawer: drawer,
+              body: SafeArea(
+                child: Stack(
+                  children: [firstPage],
+                ),
+              ))),
+    );
+
+    // return Scaffold(
+    //     appBar: AppBar(
+    //       title: const Text("Recommender App"),
+    //       centerTitle: true,
+    //     ),
+    //     body: SafeArea(
+    //       child: Stack(
+    //         children: [firstPage],
+    //       ),
+    //     ));
+  }
+
+  Future<void> logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 }

@@ -15,12 +15,15 @@ class LocationLoadingState extends LocationState {
 
 //Data Loaded State
 class LocationLoadedState extends LocationState {
-  LocationLoadedState(this.attractions, this.categories, this.location);
+  LocationLoadedState(
+      this.attractions, this.categories, this.location, this.locationString);
   final List<AttractionModel> attractions;
   final List<CategoryModel> categories;
   final LocationModel location;
+  final String? locationString;
   @override
-  List<Object?> get props => [attractions, categories, location];
+  List<Object?> get props =>
+      [attractions, categories, location, locationString];
 }
 
 //Data error Loading State
