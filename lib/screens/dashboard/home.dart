@@ -384,7 +384,7 @@ class _HomeState extends State<Home> {
                       child: Column(
                         children: [
                           initial(context),
-                          categoryScrollView(categorySum),
+                          //categoryScrollView(categorySum),
                           customScroll(attractionList),
                         ],
                       )));
