@@ -1,12 +1,5 @@
-# starfleet_app
+# Android Flutter Recommender App
 
-Firebase Auth & Travel App
+### Firebase Authentication & Travel App that recommends attractions based on Location
 
-## Getting Started
-
-Models
-    * Attraction
-    * Location
-    * Category
-    * User
-    * Feedback
+#### Flutter - Frontend; NodeJS x Mongo API - Backend; 
